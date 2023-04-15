@@ -13,7 +13,7 @@ const router: RouteObject[] = [
     element: <BaseLayout />,
     children: [
       {
-        index: true,
+        path: '',
         element: (
           <PrivateRoute>
             <Home />

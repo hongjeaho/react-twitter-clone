@@ -2,6 +2,9 @@ import React, { useState } from 'react'
 import styled from '@emotion/styled/macro'
 import { auth } from '@/fbase'
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
+import { setIsLogin } from '@/features/stores/customer'
+import { useAppDispatch } from '@/features/hooks'
+import { useNavigate } from 'react-router-dom'
 
 const Base = styled.div`
   display: flex;
@@ -15,18 +18,21 @@ const Auth: React.FC = () => {
   const [password, setPassword] = useState<string>('')
   const [account] = useState<boolean>(true)
 
+  const movePage = useNavigate()
+  const dispatch = useAppDispatch()
+
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
     try {
       if (account) {
-        const data = await createUserWithEmailAndPassword(auth, email, password)
-        console.dir(data)
-        return
+        await createUserWithEmailAndPassword(auth, email, password)
+      } else {
+        await signInWithEmailAndPassword(auth, email, password)
       }
 
-      const data = await signInWithEmailAndPassword(auth, email, password)
-      console.dir(data)
+      dispatch(setIsLogin(true))
+      movePage('/home')
     } catch (ex) {
       console.log(ex)
     }

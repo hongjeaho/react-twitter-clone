@@ -1,20 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { Navigate } from 'react-router-dom'
-import { auth } from '@/fbase'
-import { type User } from 'firebase/auth'
+import { useAppSelector } from '@/features/hooks'
 
 interface Props {
   children: React.ReactNode
 }
 
 const PrivateRoute: React.FC<Props> = ({ children }) => {
-  const [isLogin, setIsLogin] = useState<User | null>(null)
+  const isLogin = useAppSelector(state => state.customer.isLogin)
 
-  useEffect(() => {
-    setIsLogin(auth.currentUser)
-  })
-
-  return isLogin != null ? <>{children}</> : <Navigate to={'/auth'} />
+  return isLogin ? <>{children}</> : <Navigate to={'/auth'} />
 }
 
 export default PrivateRoute
